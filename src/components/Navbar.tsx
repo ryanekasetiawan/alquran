@@ -3,11 +3,11 @@ import { FaQuran } from "react-icons/fa";
 
 const Navbar = () => {
   return (
-    <nav className="bg-white sticky top-0 z-10 mb-5">
+    <nav className="bg-white sticky top-0 z-50 mb-5">
       <div className="max-w-full mx-auto px-12 py-4 flex justify-between items-center">
         <Link to="/" className="flex gap-3">
           <FaQuran className="text-4xl text-[#3daa25]" />
-          <h1 className="text-slate-700 font-bold text-4xl">Al-Qur'an</h1>
+          <h1 className="text-slate-700 font-bold text-4xl">Qur'anku</h1>
         </Link>
 
         <ul className="flex space-x-4 text-slate-500">
@@ -22,6 +22,14 @@ const Navbar = () => {
           <li>
             <Link to="/doa" className="hover:underline hover:text-[#3daa25]">
               Doa
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/asmaul-husna"
+              className="hover:underline hover:text-[#3daa25]"
+            >
+              Asmaul Husna
             </Link>
           </li>
           {/* Menu Services dengan Dropdown */}

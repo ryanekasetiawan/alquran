@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Alquran from "./pages/Alquran";
 import Doa from "./pages/Doa";
+import AsmaulHusna from "./pages/AsmaulHusna";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/alquran" element={<Alquran />} />
         <Route path="/doa" element={<Doa />} />
+        <Route path="/asmaul-husna" element={<AsmaulHusna />} />
       </Routes>
     </>
   );

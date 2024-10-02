@@ -3,5 +3,18 @@
 @tailwind utilities;
 
 body {
-  background-color: #3daa25;
+  /*  background-color: #3daa25;*/
+  font-family: "Quicksand", sans-serif;
+}
+
+@font-face {
+  font-family: "LPMQ";
+  src: url("/font/LPMQIsepMisbah.ttf") format("truetype"); /* Ganti dengan format yang sesuai */
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Gunakan font di elemen yang diinginkan */
+.arab-font {
+  font-family: "LPMQ", sans-serif; /* Menggunakan font dan fallback ke sans-serif */
 }
