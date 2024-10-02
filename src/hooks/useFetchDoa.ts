@@ -1,5 +1,5 @@
 // src/api.ts
-export type Doa = {
+export type DoaType = {
   id: number;
   grup: string;
   nama: string;
@@ -11,7 +11,7 @@ export type Doa = {
   tag: string;
 };
 
-export const useFetchDoa = async (): Promise<Doa[]> => {
+export const useFetchDoa = async (): Promise<DoaType[]> => {
   try {
     const response = await fetch("https://equran.id/api/doa");
     if (!response.ok) {

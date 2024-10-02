@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // Tipe data untuk surat
-export type Surat = {
+export type SuratType = {
   nomor: number;
   nama: string;
   namaLatin: string;
@@ -16,7 +16,7 @@ export type Surat = {
 
 // Custom hook untuk mengambil data surat
 export const useFetchSurat = () => {
-  const [suratList, setSuratList] = useState<Surat[]>([]);
+  const [suratList, setSuratList] = useState<SuratType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

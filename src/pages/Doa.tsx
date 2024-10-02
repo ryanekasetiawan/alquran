@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useFetchDoa, Doa } from "@/hooks/useFetchDoa";
+import { useFetchDoa, DoaType } from "@/hooks/useFetchDoa";
 import Button from "@/components/ui/button";
 
 const Doa = () => {
-  const [doas, setDoas] = useState<Doa[]>([]);
+  const [doas, setDoas] = useState<DoaType[]>([]);
   const [selectedDoa, setSelectedDoa] = useState<number | null>(null);
   const [loadingDoa, setLoadingDoa] = useState(true); // State untuk loading daftar doa
   const [loadingSelectedDoa, setLoadingSelectedDoa] = useState(false); // State untuk loading detail doa
-  const [detailDoa, setDetailDoa] = useState<Doa | null>(null); // State untuk menyimpan detail doa
+  const [detailDoa, setDetailDoa] = useState<DoaType | null>(null); // State untuk menyimpan detail doa
 
   useEffect(() => {
     const getDoa = async () => {

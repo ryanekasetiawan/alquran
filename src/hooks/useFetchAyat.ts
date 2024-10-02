@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export type Ayat = {
+export type AyatType = {
   nomorAyat: number;
   teksArab: string;
   teksLatin: string;
@@ -11,7 +11,7 @@ export type Ayat = {
 };
 
 export const useFetchAyat = (suratNomor: number | null) => {
-  const [ayatList, setAyatList] = useState<Ayat[]>([]);
+  const [ayatList, setAyatList] = useState<AyatType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 

@@ -1,4 +1,4 @@
-import { asmaulHusna } from "@/utils/asmaulHusna";
+import { asmaulHusna, AsmaulHusnaType } from "@/utils/asmaulHusna";
 
 const AsmaulHusna = () => {
   return (
@@ -6,7 +6,7 @@ const AsmaulHusna = () => {
       <h1 className="text-2xl font-bold">Daftar Asmaul Husna</h1>
       <div className="">
         <ul className="my-8 grid grid-cols-3 gap-5 text-center text-white font-semibold">
-          {asmaulHusna.map((item) => (
+          {asmaulHusna.map((item: AsmaulHusnaType) => (
             <li
               key={item.urutan}
               className="bg-[#3daa25] p-2 border rounded-lg"

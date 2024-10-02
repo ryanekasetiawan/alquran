@@ -1,11 +1,11 @@
-type AsmaulHusna = {
+export type AsmaulHusnaType = {
   urutan: number;
   latin: string;
   arab: string;
   arti: string;
 };
 
-export const asmaulHusna: AsmaulHusna[] = [
+export const asmaulHusna: AsmaulHusnaType[] = [
   {
     urutan: 1,
     latin: "Ar Rahman",

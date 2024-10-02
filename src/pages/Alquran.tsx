@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/ui/button";
-import { useFetchSurat } from "@/hooks/useFetchSurat";
-import { useFetchAyat } from "@/hooks/useFetchAyat";
+import { useFetchSurat, SuratType } from "@/hooks/useFetchSurat";
+import { useFetchAyat, AyatType } from "@/hooks/useFetchAyat";
 import { FaPlay, FaPause, FaStop } from "react-icons/fa";
-import { FaQuran } from "react-icons/fa";
+// import { FaQuran } from "react-icons/fa";
 
 const Alquran = () => {
   const {
@@ -116,7 +116,7 @@ const Alquran = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-5">
-              {suratList.map((surat) => (
+              {suratList.map((surat: SuratType) => (
                 <Button
                   key={surat.nomor}
                   onClick={() => handleClick(surat.nomor)}
@@ -155,7 +155,7 @@ const Alquran = () => {
               ) : (
                 ayatList.length > 0 && (
                   <div className=" text-right mr-8">
-                    {ayatList.map((ayat, index) => (
+                    {ayatList.map((ayat: AyatType, index: number) => (
                       <div
                         id={`ayat-${index}`}
                         key={ayat.nomorAyat}
