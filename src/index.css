@@ -18,3 +18,17 @@ body {
 .arab-font {
   font-family: "LPMQ", sans-serif; /* Menggunakan font dan fallback ke sans-serif */
 }
+
+.no-scrollbar {
+  /* Untuk browser berbasis WebKit (Chrome, Safari, Edge, Opera) */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* WebKit */
+}
+
+.fixed-animate {
+  transition: transform 0.3s ease-in-out;
+}

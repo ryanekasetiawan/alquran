@@ -1,9 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Button from "@/components/ui/button";
 import { useFetchSurat, SuratType } from "@/hooks/useFetchSurat";
 import { useFetchAyat, AyatType } from "@/hooks/useFetchAyat";
 import { FaPlay, FaPause, FaStop } from "react-icons/fa";
-// import { FaQuran } from "react-icons/fa";
 
 const Alquran = () => {
   const {
@@ -15,11 +14,15 @@ const Alquran = () => {
   const [currentAyatIndex, setCurrentAyatIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const ayatContainerRef = useRef<HTMLDivElement>(null); // Ref untuk daftar ayat
+  const [ayatList, setAyatList] = useState<AyatType[]>([]); // State untuk ayatList
+  const [loadingAyat, setLoadingAyat] = useState(false); // State loading untuk ayat
+  const [searchQuery, setSearchQuery] = useState(""); // State untuk kata kunci pencarian
 
   // Mengambil ayat dari custom hook berdasarkan surat yang dipilih
   const {
-    ayatList,
-    loading: loadingAyat,
+    ayatList: fetchedAyatList,
+    loading: loadingAyatFetch,
     error: errorAyat,
   } = useFetchAyat(selectedSurat);
 
@@ -36,11 +39,22 @@ const Alquran = () => {
     setSelectedSurat(suratNomor);
     setCurrentAyatIndex(0);
     setIsPlaying(false);
+    setLoadingAyat(true); // Set loading saat mengubah surat
+
+    // Reset ayat list saat loading dimulai untuk menghindari flicker
+    setAyatList([]); // Reset ayat list
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
   };
+
+  // Scroll ke atas saat surat berubah
+  useEffect(() => {
+    if (ayatContainerRef.current) {
+      ayatContainerRef.current.scrollTo(0, 0); // Scroll ke atas
+    }
+  }, [selectedSurat]);
 
   // Play, pause, dan stop audio
   const playAudio = () => {
@@ -66,75 +80,115 @@ const Alquran = () => {
     setCurrentAyatIndex(0);
   };
 
-  const handleAudioEnded = () => {
-    nextAyat();
-  };
-
-  const nextAyat = () => {
+  const nextAyat = useCallback(() => {
     if (currentAyatIndex < ayatList.length - 1) {
-      setCurrentAyatIndex(currentAyatIndex + 1);
+      setCurrentAyatIndex((prevIndex) => prevIndex + 1);
     } else {
       stopAudio();
     }
-  };
+  }, [currentAyatIndex, ayatList]);
+
+  const handleAudioEnded = useCallback(() => {
+    nextAyat();
+  }, [nextAyat]);
 
   // Set audio source saat ayat dipilih
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.src = ayatList[currentAyatIndex]?.audio["05"];
+    // Salin nilai audioRef.current ke dalam variabel lokal
+    const audioElement = audioRef.current;
+
+    if (audioElement) {
+      audioElement.src = ayatList[currentAyatIndex]?.audio["05"];
       if (isPlaying) {
-        audioRef.current.play();
+        audioElement.play();
       }
-      audioRef.current.addEventListener("ended", handleAudioEnded);
+      audioElement.addEventListener("ended", handleAudioEnded);
     }
+
+    // Cleanup: pastikan referensi yang sama digunakan
     return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener("ended", handleAudioEnded);
+      if (audioElement) {
+        audioElement.removeEventListener("ended", handleAudioEnded);
       }
     };
-  }, [currentAyatIndex, ayatList, isPlaying]);
+  }, [currentAyatIndex, ayatList, isPlaying, handleAudioEnded]);
 
-  // Handle loading dan error states
-  // if (loadingSurat)
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-500"></div>
-  //     </div>
-  //   );
+  // Update ayatList saat data berhasil di-fetch
+  useEffect(() => {
+    if (!loadingAyatFetch && fetchedAyatList.length > 0) {
+      setAyatList(fetchedAyatList);
+      setLoadingAyat(false); // Set loading false setelah ayat di-fetch
+    }
+  }, [loadingAyatFetch, fetchedAyatList]);
+
+  // Filter daftar surat berdasarkan kata kunci pencarian
+  const filteredSuratList = suratList.filter((surat: SuratType) => {
+    const normalizedSearchQuery: string = searchQuery.toLowerCase().trim();
+    const searchWords: string[] = normalizedSearchQuery.split(" ");
+
+    return searchWords.every(
+      (word: string) =>
+        (surat.nomor && surat.nomor.toString().includes(word)) ||
+        (surat.namaLatin && surat.namaLatin.toLowerCase().includes(word)) ||
+        (surat.arti && surat.arti.toLowerCase().includes(word)),
+    );
+  });
+
   if (errorSurat) return <p>{errorSurat}</p>;
 
   return (
-    <div className="ml-12">
+    <div className="mt-5 ml-5 md:ml-12">
       <h1 className="text-2xl font-bold">Daftar Surat</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 my-8 h-[80vh]">
+      {/* Input Text Pencarian */}
+      <div className="flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
+        <input
+          type="text"
+          placeholder="Cari Surat/No. Surat"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-[200px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+        />
+        {searchQuery && (
+          <span className="text-gray-600">
+            {filteredSuratList.length} hasil ditemukan
+          </span>
+        )}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5 h-[80vh]">
         {/* Kolom 1: Daftar Surat */}
-        <div className="col-span-1 border-r pr-5 overflow-y-auto h-full">
+        <div className="col-span-1 border-r border-l lg:border-none px-2 lg:pr-5 overflow-y-auto h-full">
           {loadingSurat ? (
             <div className="flex flex-col items-center justify-center min-h-screen">
               <div className="animate-spin rounded-full h-8 w-8 border-t-4 border-b-4 border-green-500"></div>
               <p>Loading surat...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-5">
-              {suratList.map((surat: SuratType) => (
+            <div className="flex lg:grid lg:grid-cols-1 lg:gap-5 gap-3 overflow-x-auto whitespace-nowrap lg:overflow-x-visible no-scrollbar">
+              {filteredSuratList.map((surat: SuratType) => (
                 <Button
                   key={surat.nomor}
                   onClick={() => handleClick(surat.nomor)}
                   isActive={surat.nomor === selectedSurat}
+                  disabled={surat.nomor === selectedSurat}
+                  className="min-w-[250px] max-w-full px-4 py-1 text-left whitespace-normal"
                 >
-                  <span className="flex items-center text-center justify-start gap-5">
+                  <div className="flex flex-col gap-1">
                     <span
-                      className={`border p-2 rounded-full ${surat.nomor === selectedSurat ? "bg-[#3daa25] text-white" : "bg-gray-300 text-black"}`}
+                      className={`border p-2 rounded-full w-10 h-10 flex items-center justify-center ${
+                        surat.nomor === selectedSurat
+                          ? "bg-[#3daa25] text-white"
+                          : "bg-gray-300 text-black"
+                      }`}
                     >
                       {surat.nomor}.
                     </span>
-                    <span className="flex flex-col">
-                      <span>{surat.namaLatin}</span>
-                      <span>
-                        ({surat.arti}) {surat.jumlahAyat} - Ayat
-                      </span>
+                    <span className="text-base font-semibold">
+                      {surat.namaLatin}
                     </span>
-                  </span>
+                    <span className="text-sm">
+                      ({surat.arti}) - {surat.jumlahAyat} Ayat
+                    </span>
+                  </div>
                 </Button>
               ))}
             </div>
@@ -142,11 +196,14 @@ const Alquran = () => {
         </div>
 
         {/* Kolom 2 dan 3: Ayat yang dipilih */}
-        <div className="col-span-2 overflow-y-auto h-full">
+        <div
+          className="col-span-2 overflow-y-auto h-full"
+          ref={ayatContainerRef} // Tambahkan referensi di sini
+        >
           {selectedSurat ? (
             <div>
               {loadingAyat ? (
-                <div className="flex flex-col items-center justify-center min-h-screen">
+                <div className="flex flex-col items-center lg:justify-center mt-12 lg:mt-0 min-h-screen">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-4 border-b-4 border-green-500"></div>
                   <p>Loading ayat...</p>
                 </div>
@@ -154,7 +211,7 @@ const Alquran = () => {
                 <p>{errorAyat}</p>
               ) : (
                 ayatList.length > 0 && (
-                  <div className=" text-right mr-8">
+                  <div className="text-right mr-5">
                     {ayatList.map((ayat: AyatType, index: number) => (
                       <div
                         id={`ayat-${index}`}
@@ -164,7 +221,7 @@ const Alquran = () => {
                       >
                         <div className="flex gap-3 justify-end">
                           <p className="arab-font text-2xl">{ayat.teksArab}</p>
-                          <p className="border rounded-xl px-3 py-2 bg-slate-200">
+                          <p className="border p-2 rounded-full w-10 h-10 flex items-center justify-center bg-gray-200">
                             {ayat.nomorAyat}.
                           </p>
                         </div>
@@ -194,6 +251,7 @@ const Alquran = () => {
           )}
         </div>
       </div>
+
       <audio ref={audioRef} />
     </div>
   );
