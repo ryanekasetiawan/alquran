@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Button from "@/components/ui/button";
 import { useFetchSurat, SuratType } from "@/hooks/useFetchSurat";
 import { useFetchAyat, AyatType } from "@/hooks/useFetchAyat";
-import { FaPlay, FaPause, FaStop } from "react-icons/fa";
+import { FaPlay, FaPause, FaStop, FaTimes } from "react-icons/fa";
 
 const Alquran = () => {
   const {
@@ -140,14 +140,26 @@ const Alquran = () => {
     <div className="mt-5 ml-5 md:ml-12">
       <h1 className="text-2xl font-bold">Daftar Surat</h1>
       {/* Input Text Pencarian */}
-      <div className="flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
-        <input
-          type="text"
-          placeholder="Cari Surat/No. Surat"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-[200px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-        />
+      <div className="relative flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
+        <div className="relative w-[200px] lg:w-[250px]">
+          <input
+            type="text"
+            placeholder="Cari Surat/No. Surat"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+          />
+          {/* Tombol close */}
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2 top-3 text-red-500 hover:text-red-600"
+              aria-label="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
         {searchQuery && (
           <span className="text-gray-600">
             {filteredSuratList.length} hasil ditemukan
@@ -156,7 +168,7 @@ const Alquran = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-5 h-[80vh]">
         {/* Kolom 1: Daftar Surat */}
-        <div className="col-span-1 border-r border-l lg:border-none px-2 lg:pr-5 overflow-y-auto h-full">
+        <div className="col-span-1 border-r border-l lg:border-none px-2 lg:px-0 lg:pr-5 overflow-y-auto h-full">
           {loadingSurat ? (
             <div className="flex flex-col items-center justify-center min-h-screen">
               <div className="animate-spin rounded-full h-8 w-8 border-t-4 border-b-4 border-green-500"></div>
@@ -170,7 +182,7 @@ const Alquran = () => {
                   onClick={() => handleClick(surat.nomor)}
                   isActive={surat.nomor === selectedSurat}
                   disabled={surat.nomor === selectedSurat}
-                  className="min-w-[250px] max-w-full px-4 py-1 text-left whitespace-normal"
+                  className="min-w-[250px] max-w-full px-4 py-4 text-left whitespace-normal"
                 >
                   <div className="flex flex-col gap-1">
                     <span
@@ -225,17 +237,17 @@ const Alquran = () => {
                             {ayat.nomorAyat}.
                           </p>
                         </div>
-                        <div className="flex flex-col gap-2 mt-5 text-lg">
+                        <div className="flex flex-col gap-2 mt-5">
                           <p className="text-[#D946EF]">{ayat.teksLatin}</p>
                           <p>{ayat.teksIndonesia}</p>
-                          <div className="flex gap-2">
-                            <Button onClick={playAudio}>
+                          <div className="flex gap-2 text-sm">
+                            <Button className="px-4 py-2" onClick={playAudio}>
                               <FaPlay />
                             </Button>
-                            <Button onClick={pauseAudio}>
+                            <Button className="px-4 py-2" onClick={pauseAudio}>
                               <FaPause />
                             </Button>
-                            <Button onClick={stopAudio}>
+                            <Button className="px-4 py-2" onClick={stopAudio}>
                               <FaStop />
                             </Button>
                           </div>

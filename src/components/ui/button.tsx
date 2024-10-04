@@ -16,11 +16,14 @@ const Button = ({
   disabled,
   className,
 }: ButtonProps) => {
+  const hasPx = className?.includes("px-");
+  const hasPy = className?.includes("py-");
+
   return (
     <button
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
-      className={`relative px-6 py-3 font-semibold rounded-md overflow-hidden transition-all duration-300 
+      className={`relative ${!hasPx ? "px-6" : ""} ${!hasPy ? "py-3" : ""} font-semibold rounded-md overflow-hidden transition-all duration-300 
         ${isActive ? "bg-gray-300 text-black" : "bg-[#3daa25] text-white"} // Gaya tombol berdasarkan isActive
         hover:shadow-lg group ${className ?? ""} ${disabled ? " cursor-not-allowed" : ""}`}
     >

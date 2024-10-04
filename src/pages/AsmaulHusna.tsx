@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { asmaulHusna, AsmaulHusnaType } from "@/utils/asmaulHusna";
+import { FaTimes } from "react-icons/fa";
 
 const AsmaulHusna = () => {
-  const [searchQuery, setSearchQuery] = useState(""); // State untuk kata kunci pencarian
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Filter daftar Asmaul Husna berdasarkan kata kunci pencarian
   const filteredAsmaulHusna = asmaulHusna.filter((item: AsmaulHusnaType) => {
@@ -20,14 +21,26 @@ const AsmaulHusna = () => {
       <h1 className="text-2xl font-bold">Daftar Asmaul Husna</h1>
 
       {/* Input Text Pencarian */}
-      <div className="flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
-        <input
-          type="text"
-          placeholder="Cari Asmaul Husna"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-[200px] p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-        />
+      <div className="relative flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
+        <div className="relative w-[200px] lg:w-[250px]">
+          <input
+            type="text"
+            placeholder="Cari Asmaul Husna"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 "
+          />
+          {/* Tombol close */}
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-2 top-3 text-red-500 hover:text-red-600"
+              aria-label="Clear search"
+            >
+              <FaTimes />
+            </button>
+          )}
+        </div>
         {searchQuery && (
           <span className="text-gray-600">
             {filteredAsmaulHusna.length} hasil ditemukan
@@ -35,7 +48,7 @@ const AsmaulHusna = () => {
         )}
       </div>
 
-      <div className="">
+      <div>
         <ul className="mb-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-center text-white font-semibold">
           {filteredAsmaulHusna.map((item: AsmaulHusnaType) => (
             <li
