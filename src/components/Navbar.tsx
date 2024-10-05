@@ -30,11 +30,12 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white sticky top-0 z-50 w-full">
-      <div className="max-w-full mx-auto px-5 md:px-12 py-4 flex justify-between items-center">
-        <Link to="/" className="flex gap-3 items-center">
-          <FaQuran className="text-4xl text-[#3daa25]" />
-          <h1 className="text-slate-700 font-bold text-4xl hover:text-[#3daa25] hover:font-bold">
+    <header className="bg-white sticky top-0 z-50 w-full">
+      <nav className="max-w-full mx-auto px-5 md:px-12 py-4 flex justify-between items-center">
+        {/*<div>*/}
+        <Link to="/" className="flex text-2xl md:text-4xl gap-3 items-center">
+          <FaQuran className=" text-[#3daa25]" />
+          <h1 className="text-slate-700 font-bold hover:text-[#3daa25] hover:font-bold">
             Qur'anku
           </h1>
         </Link>
@@ -50,7 +51,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden lg:flex space-x-4 text-slate-500">
+        <ul className="hidden lg:flex space-x-4 text-slate-500 text-lg">
           <li>
             <NavLink
               to="/alquran"
@@ -60,7 +61,7 @@ const Navbar = () => {
                   : "hover:underline hover:text-[#3daa25]"
               }
             >
-              Al-Qur'an
+              Al-Qur'an & Tafsir
             </NavLink>
           </li>
           <li>
@@ -131,18 +132,21 @@ const Navbar = () => {
             ref={menuRef}
             className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-40 overflow-y-auto no-scrollbar transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
           >
-            <button onClick={toggleMenu} className="p-8">
-              <FaTimes size={24} />
-            </button>
-            <Link
-              to="/"
-              className="flex gap-3 items-center text-center justify-center mb-4"
-            >
-              <FaQuran className="text-2xl text-[#3daa25]" />
-              <h1 className="text-slate-700 font-bold text-2xl hover:text-[#3daa25] hover:font-bold">
-                Qur'anku
-              </h1>
-            </Link>
+            <div className="flex items-center justify-between text-center py-6 pl-8 pr-4">
+              <Link
+                to="/"
+                className="flex gap-2 items-center text-center justify-center"
+                onClick={handleLinkClick}
+              >
+                <FaQuran className="text-2xl text-[#3daa25]" />
+                <h1 className="text-slate-700 font-bold text-2xl hover:text-[#3daa25] hover:font-bold">
+                  Qur'anku
+                </h1>
+              </Link>
+              <button onClick={toggleMenu} className="p-0.5">
+                <FaTimes size={24} />
+              </button>
+            </div>
             <ul className="flex flex-col p-8 space-y-4 text-slate-500">
               <li>
                 <NavLink
@@ -154,7 +158,7 @@ const Navbar = () => {
                       : "hover:underline hover:text-[#3daa25]"
                   }
                 >
-                  Al-Qur'an
+                  Al-Qur'an & Tafsir
                 </NavLink>
               </li>
               <li>
@@ -202,8 +206,9 @@ const Navbar = () => {
             </ul>
           </div>
         )}
-      </div>
-    </nav>
+        {/*</div>*/}
+      </nav>
+    </header>
   );
 };
 

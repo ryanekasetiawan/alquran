@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { asmaulHusna, AsmaulHusnaType } from "@/utils/asmaulHusna";
 import { FaTimes } from "react-icons/fa";
+import { webTitle } from "@/utils/webTitle";
 
 const AsmaulHusna = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,9 +17,11 @@ const AsmaulHusna = () => {
     );
   });
 
+  document.title = `Asmaul Husna - ${webTitle}`;
+
   return (
-    <div className="mt-5 mx-5 md:mx-12">
-      <h1 className="text-2xl font-bold">Daftar Asmaul Husna</h1>
+    <div className="mt-2 md:mt-5 mx-5 md:mx-12">
+      <h1 className="text-xl md:text-2xl font-bold">Daftar Asmaul Husna</h1>
 
       {/* Input Text Pencarian */}
       <div className="relative flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">

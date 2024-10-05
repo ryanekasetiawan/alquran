@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "compress-images": "bun run compress-images.ts",
+    "build": "tsc -b && bun run compress-images.ts && vite build"
   },
   "dependencies": {
     "@types/node": "^22.7.4",
@@ -19,6 +20,7 @@
     "react-virtualized": "^9.22.5",
     "react-virtualized-auto-sizer": "^1.0.24",
     "react-window": "^1.8.10",
+    "sharp": "^0.33.5",
     "typescript": "5.5.4",
     "vite-tsconfig-paths": "^5.0.1"
   },

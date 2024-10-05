@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useFetchDoa, DoaType } from "@/hooks/useFetchDoa";
 import Button from "@/components/ui/button";
 import { FaTimes } from "react-icons/fa";
+import { webTitle } from "@/utils/webTitle";
 
 const Doa = () => {
   const { doas, loading: loadingDoa, error } = useFetchDoa();
@@ -10,6 +11,25 @@ const Doa = () => {
   const [detailDoa, setDetailDoa] = useState<DoaType | null>(null);
   const detailDoaRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const arabicRegex = /[\u0600-\u06FF\u0750-\u077F]/;
+
+  const renderTextWithDifferentFonts = (text: string) => {
+    return text.split(/(\s+)/).map((word, index) => {
+      if (arabicRegex.test(word)) {
+        return (
+          <span key={index} className="arab-font text-xl">
+            {word}
+          </span>
+        );
+      }
+      return (
+        <span key={index} className="italic">
+          {word}
+        </span>
+      );
+    });
+  };
 
   useEffect(() => {
     if (doas.length > 0) {
@@ -60,9 +80,11 @@ const Doa = () => {
     return "min-w-[600px]";
   };
 
+  document.title = `Doa - ${webTitle}`;
+
   return (
-    <div className="mt-5 ml-5 md:ml-12">
-      <h1 className="text-2xl font-bold">Daftar Doa</h1>
+    <div className="mt-2 md:mt-5 ml-5 md:ml-12">
+      <h1 className="text-xl md:text-2xl font-bold">Daftar Doa</h1>
       {error && <p className="text-red-500">{error}</p>}{" "}
       {/* Tampilkan pesan error */}
       <div className="relative flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
@@ -121,7 +143,7 @@ const Doa = () => {
           <div ref={detailDoaRef}>
             {selectedDoa !== null ? (
               loadingSelectedDoa ? (
-                <div className="flex flex-col items-center justify-center h-full">
+                <div className="flex flex-col items-center lg:justify-center mt-12 lg:mt-0 h-full">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-4 border-b-4 border-green-500"></div>
                   <p>Loading detail doa...</p>
                 </div>
@@ -133,7 +155,9 @@ const Doa = () => {
                   </p>
                   <p className="text-[#D946EF]">{detailDoa.tr}</p>
                   <p>{detailDoa.idn}</p>
-                  <p className="mt-2 italic">{detailDoa.tentang}</p>
+                  <p className="mt-2">
+                    {renderTextWithDifferentFonts(detailDoa.tentang)}
+                  </p>
                 </div>
               ) : (
                 <p>Doa tidak ditemukan</p>

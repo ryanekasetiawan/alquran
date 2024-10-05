@@ -1,15 +1,14 @@
-import { useEffect } from "react";
 import { webTitle } from "@/utils/webTitle";
+import salamImage from "@/assets/images/salam.webp";
 
 const Home = () => {
-  useEffect(() => {
-    document.title = `Home - ${webTitle}`;
-  }, []);
+  document.title = `Home - ${webTitle}`;
+
   return (
-    <div className="container mx-12">
-      <div>Home Page</div>
-      <div className="arab-font">
-        <p>السلام عليكم</p> {/* Teks dalam bahasa Arab */}
+    <div className="w-full">
+      <div className="arab-font">{/*<p>السلام عليكم</p>*/}</div>
+      <div className="flex justify-center items-center py-5 bg-[#3daa25]">
+        <img src={salamImage} alt="alquran" className="w-48 lg:w-72" />
       </div>
     </div>
   );
