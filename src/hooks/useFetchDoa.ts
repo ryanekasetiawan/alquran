@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { get, set } from "idb-keyval";
 
 export type DoaType = {
   id: number;
@@ -12,6 +13,14 @@ export type DoaType = {
   tag: string;
 };
 
+type CachedDoaData = {
+  data: DoaType[];
+  timestamp: number;
+};
+
+const CACHE_KEY = "doaList";
+const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
+
 export const useFetchDoa = () => {
   const [doas, setDoas] = useState<DoaType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,15 +29,28 @@ export const useFetchDoa = () => {
   useEffect(() => {
     const fetchDoa = async () => {
       try {
-        const response = await fetch("https://equran.id/api/doa");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
+        const currentTime = Date.now();
+        const cachedData: CachedDoaData | undefined =
+          await get<CachedDoaData>(CACHE_KEY);
+
+        if (cachedData && currentTime - cachedData.timestamp < CACHE_DURATION) {
+          setDoas(cachedData.data);
+        } else {
+          const response = await fetch("https://equran.id/api/doa");
+          if (!response.ok) {
+            throw new Error("Failed to fetch data");
+          }
+          const data = await response.json();
+          setDoas(data);
+          await set(CACHE_KEY, {
+            data,
+            timestamp: currentTime,
+          });
         }
-        const data = await response.json();
-        setDoas(data);
+
+        setError(null);
       } catch (err) {
         const errorMessage = (err as Error).message;
-        console.error("Error fetching data:", errorMessage);
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -36,7 +58,7 @@ export const useFetchDoa = () => {
     };
 
     fetchDoa();
-  }, []); // Kosongkan dependency array agar hanya dijalankan sekali saat mount
+  }, []);
 
   return { doas, loading, error };
 };

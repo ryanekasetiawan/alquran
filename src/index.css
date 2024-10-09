@@ -3,32 +3,40 @@
 @tailwind utilities;
 
 body {
-  /*  background-color: #3daa25;*/
   font-family: "Quicksand", sans-serif;
 }
 
 @font-face {
   font-family: "LPMQ";
-  src: url("/font/LPMQIsepMisbah.ttf") format("truetype"); /* Ganti dengan format yang sesuai */
+  src: url("/font/LPMQIsepMisbah.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
 }
 
-/* Gunakan font di elemen yang diinginkan */
 .arab-font {
-  font-family: "LPMQ", sans-serif; /* Menggunakan font dan fallback ke sans-serif */
+  font-family: "LPMQ", "Noto Sans Arabic", sans-serif;
 }
 
 .no-scrollbar {
-  /* Untuk browser berbasis WebKit (Chrome, Safari, Edge, Opera) */
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none; /* WebKit */
+  display: none;
 }
 
 .fixed-animate {
   transition: transform 0.3s ease-in-out;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }

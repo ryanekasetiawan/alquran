@@ -30,14 +30,15 @@ const Navbar = () => {
   };
 
   return (
-    <header className="bg-white sticky top-0 z-50 w-full">
+    <header className="bg-white sticky top-0 z-[100] w-full">
       <nav className="max-w-full mx-auto px-5 md:px-12 py-4 flex justify-between items-center">
         {/*<div>*/}
-        <Link to="/" className="flex text-2xl md:text-4xl gap-3 items-center">
-          <FaQuran className=" text-[#3daa25]" />
-          <h1 className="text-slate-700 font-bold hover:text-[#3daa25] hover:font-bold">
-            Qur'anku
-          </h1>
+        <Link
+          to="/"
+          className="flex text-2xl md:text-4xl gap-3 items-center text-slate-800 font-bold hover:text-[#3daa25]"
+        >
+          <FaQuran className="text-[#3daa25]" />
+          <h1 className="hover:text-[#3daa25]">Qur'anku</h1>
         </Link>
 
         {/* Hamburger Menu for small screens */}
@@ -54,7 +55,19 @@ const Navbar = () => {
         <ul className="hidden lg:flex space-x-4 text-slate-500 text-lg">
           <li>
             <NavLink
-              to="/alquran"
+              to="/"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-[#3daa25] font-bold"
+                  : "hover:underline hover:text-[#3daa25]"
+              }
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/quran"
               className={({ isActive }) =>
                 isActive
                   ? "text-[#3daa25] font-bold"
@@ -88,7 +101,7 @@ const Navbar = () => {
               Asmaul Husna
             </NavLink>
           </li>
-          <li className="relative group">
+          {/*<li className="relative group">
             <Link
               to="#services"
               className="hover:underline hover:text-[#3daa25]"
@@ -115,42 +128,53 @@ const Navbar = () => {
               </li>
             </ul>
             <div className="absolute left-0 top-full h-5 w-full"></div>
-          </li>
-          <li>
+          </li>*/}
+          {/*<li>
             <Link
               to="#contact"
               className="hover:underline hover:text-[#3daa25]"
             >
               Contact
             </Link>
-          </li>
+          </li>*/}
         </ul>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div
             ref={menuRef}
-            className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-40 overflow-y-auto no-scrollbar transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+            className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-[100] overflow-y-auto no-scrollbar transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
           >
             <div className="flex items-center justify-between text-center py-6 pl-8 pr-4">
               <Link
                 to="/"
-                className="flex gap-2 items-center text-center justify-center"
+                className="flex gap-2 items-center text-center justify-center text-2xl text-slate-800 font-bold hover:text-[#3daa25]"
                 onClick={handleLinkClick}
               >
-                <FaQuran className="text-2xl text-[#3daa25]" />
-                <h1 className="text-slate-700 font-bold text-2xl hover:text-[#3daa25] hover:font-bold">
-                  Qur'anku
-                </h1>
+                <FaQuran className="text-[#3daa25]" />
+                <h1 className="hover:text-[#3daa25]">Qur'anku</h1>
               </Link>
               <button onClick={toggleMenu} className="p-0.5">
-                <FaTimes size={24} />
+                <FaTimes size={20} />
               </button>
             </div>
             <ul className="flex flex-col p-8 space-y-4 text-slate-500">
               <li>
                 <NavLink
-                  to="/alquran"
+                  to="/"
+                  onClick={handleLinkClick}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-[#3daa25] font-bold"
+                      : "hover:underline hover:text-[#3daa25]"
+                  }
+                >
+                  Home
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/quran"
                   onClick={handleLinkClick}
                   className={({ isActive }) =>
                     isActive
@@ -186,22 +210,6 @@ const Navbar = () => {
                 >
                   Asmaul Husna
                 </NavLink>
-              </li>
-              <li>
-                <Link
-                  to="#services"
-                  className="hover:underline hover:text-[#3daa25]"
-                >
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#contact"
-                  className="hover:underline hover:text-[#3daa25]"
-                >
-                  Contact
-                </Link>
               </li>
             </ul>
           </div>

@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-between">
           {/* copyright */}
-          <div className="text-gray-400">
+          <div className="text-gray-400 text-sm">
             Copyright &copy; Ryan Eka Setiawan. All rights reserved.
           </div>
         </div>

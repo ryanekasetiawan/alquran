@@ -1,14 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import { fileURLToPath } from "url"; // Tambahkan ini
-import { dirname, resolve } from "path"; // Gunakan dirname dari path
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 
-// Ambil __dirname menggunakan import.meta.url
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    rollupOptions: {
+      input: resolve(__dirname, "index.html"),
+    },
+  },
   resolve: {
     alias: {
       "@": resolve(__dirname, "src"),

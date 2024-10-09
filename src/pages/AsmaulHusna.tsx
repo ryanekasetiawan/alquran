@@ -6,7 +6,6 @@ import { webTitle } from "@/utils/webTitle";
 const AsmaulHusna = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Filter daftar Asmaul Husna berdasarkan kata kunci pencarian
   const filteredAsmaulHusna = asmaulHusna.filter((item: AsmaulHusnaType) => {
     const normalizedSearchQuery = searchQuery.toLowerCase().trim();
     return (
@@ -20,35 +19,37 @@ const AsmaulHusna = () => {
   document.title = `Asmaul Husna - ${webTitle}`;
 
   return (
-    <div className="mt-2 md:mt-5 mx-5 md:mx-12">
-      <h1 className="text-xl md:text-2xl font-bold">Daftar Asmaul Husna</h1>
+    <div className="mt-2 md:mt-5 mx-5 md:mx-12 min-h-[100vh]">
+      <div className="sticky z-50 top-16 bg-white pb-2">
+        <h1 className="text-xl md:text-2xl font-bold">Daftar Asmaul Husna</h1>
 
-      {/* Input Text Pencarian */}
-      <div className="relative flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
-        <div className="relative w-[200px] lg:w-[250px]">
-          <input
-            type="text"
-            placeholder="Cari Asmaul Husna"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 "
-          />
-          {/* Tombol close */}
+        {/* Input Text Pencarian */}
+        <div className="relative flex justify-start gap-4 items-center mt-2 mb-5 lg:mb-5">
+          <div className="relative w-[200px] lg:w-[250px]">
+            <input
+              type="text"
+              placeholder="Cari Asmaul Husna"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 "
+            />
+            {/* Tombol close */}
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2 top-3 text-red-500 hover:text-red-600"
+                aria-label="Clear search"
+              >
+                <FaTimes />
+              </button>
+            )}
+          </div>
           {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-2 top-3 text-red-500 hover:text-red-600"
-              aria-label="Clear search"
-            >
-              <FaTimes />
-            </button>
+            <span className="text-gray-600">
+              {filteredAsmaulHusna.length} hasil ditemukan
+            </span>
           )}
         </div>
-        {searchQuery && (
-          <span className="text-gray-600">
-            {filteredAsmaulHusna.length} hasil ditemukan
-          </span>
-        )}
       </div>
 
       <div>

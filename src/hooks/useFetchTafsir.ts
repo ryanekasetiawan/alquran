@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { get, set } from "idb-keyval";
 
 type TafsirData = {
   ayat: number;
@@ -25,6 +26,16 @@ type TafsirResponse = {
   };
 };
 
+type CachedTafsirData = {
+  data: TafsirData;
+  timestamp: number;
+};
+
+const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
+
+const getCacheKey = (surahId: number, ayatId: number) =>
+  `tafsir_${surahId}_${ayatId}`;
+
 export const useFetchTafsir = () => {
   const [tafsirData, setTafsirData] = useState<TafsirData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,29 +43,45 @@ export const useFetchTafsir = () => {
 
   const fetchTafsir = async (surahId: number, ayatId: number) => {
     setLoading(true);
-    setTafsirData(null); // reset tafsir saat loading
+    setTafsirData(null);
     try {
-      const response = await fetch(
-        `https://equran.id/api/v2/tafsir/${surahId}`,
-      );
-      const data: TafsirResponse = await response.json();
+      const cacheKey = getCacheKey(surahId, ayatId);
+      const cachedData: CachedTafsirData | undefined =
+        await get<CachedTafsirData>(cacheKey);
+      const currentTime = Date.now();
 
-      if (response.ok) {
-        const tafsirAyat = data.data.tafsir.find(
-          (tafsir) => tafsir.ayat === ayatId,
-        );
-        if (tafsirAyat) {
-          setTafsirData(tafsirAyat);
-          setError(null);
-        } else {
-          throw new Error("Tafsir untuk ayat ini tidak ditemukan.");
-        }
+      if (cachedData && currentTime - cachedData.timestamp < CACHE_DURATION) {
+        setTafsirData(cachedData.data);
       } else {
-        throw new Error(data.message || "Gagal mengambil tafsir.");
+        const response = await fetch(
+          `https://equran.id/api/v2/tafsir/${surahId}`,
+        );
+        const data: TafsirResponse = await response.json();
+
+        if (response.ok) {
+          const tafsirAyat = data.data.tafsir.find(
+            (tafsir) => tafsir.ayat === ayatId,
+          );
+          if (tafsirAyat) {
+            setTafsirData(tafsirAyat);
+            await set(cacheKey, {
+              data: tafsirAyat,
+              timestamp: currentTime,
+            });
+          } else {
+            throw new Error("Tafsir untuk ayat ini tidak ditemukan.");
+          }
+        } else {
+          throw new Error(data.message || "Gagal mengambil tafsir.");
+        }
       }
-    } catch (err) {
-      console.error("Error fetching tafsir:", err);
-      setError("Terjadi kesalahan saat mengambil tafsir.");
+      setError(null);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Terjadi kesalahan saat mengambil tafsir.");
+      }
     } finally {
       setLoading(false);
     }
