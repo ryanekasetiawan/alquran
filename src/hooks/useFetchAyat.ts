@@ -6,9 +6,7 @@ export type AyatType = {
   teksArab: string;
   teksLatin: string;
   teksIndonesia: string;
-  audio: {
-    [key: string]: string;
-  };
+  audio: { [key: string]: string };
 };
 
 type CachedAyatData = {
@@ -24,66 +22,77 @@ const getCacheKey = (suratNomor: number) => `ayatList_surat_${suratNomor}`;
 export const useFetchAyat = (suratNomor: number | null) => {
   const [ayatList, setAyatList] = useState<AyatType[]>([]);
   const [namaSurat, setNamaSurat] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!suratNomor) return;
+
     const fetchAyat = async (suratNomor: number) => {
-      if (!suratNomor) {
-        return;
-      }
-
       const cacheKey = getCacheKey(suratNomor);
-      const cachedData = await get<CachedAyatData>(cacheKey);
-
       setLoading(true);
+      setError(null);
 
-      const now = Date.now();
+      try {
+        const cachedData = await get<CachedAyatData>(cacheKey);
+        const now = Date.now();
 
-      if (cachedData) {
-        if (now - cachedData.timestamp < CACHE_DURATION) {
+        if (cachedData && now - cachedData.timestamp < CACHE_DURATION) {
           setAyatList(cachedData.data);
           setNamaSurat(cachedData.namaSurat);
           setLoading(false);
           return;
-        } else {
-          await set(cacheKey, undefined);
         }
+      } catch (cacheError) {
+        console.error("Cache retrieval failed", cacheError);
       }
+
+      const controller = new AbortController();
+      const { signal } = controller;
 
       try {
         const response = await fetch(
           `https://equran.id/api/v2/surat/${suratNomor}`,
+          { signal },
         );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
 
-        if (response.ok && data.data && Array.isArray(data.data.ayat)) {
-          setAyatList(data.data.ayat);
+        if (data && Array.isArray(data.data.ayat)) {
+          const ayatData = data.data.ayat;
           const retrievedNamaSurat = data.data.namaLatin;
-          setNamaSurat(retrievedNamaSurat);
+
+          setAyatList(ayatData);
+          setNamaSurat(retrievedNamaSurat || "Nama tidak tersedia");
 
           await set(cacheKey, {
-            data: data.data.ayat,
-            namaSurat: retrievedNamaSurat || "Nama tidak tersedia",
+            data: ayatData,
+            namaSurat: retrievedNamaSurat,
             timestamp: Date.now(),
           });
         } else {
-          throw new Error(data.message || "Surat tidak ditemukan");
+          throw new Error("Data tidak valid atau surat tidak ditemukan");
         }
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
+        if (error instanceof DOMException && error.name === "AbortError") {
+          console.log("Fetch request aborted");
         } else {
-          setError("Terjadi kesalahan yang tidak diketahui");
+          setError(
+            error instanceof Error ? error.message : "Kesalahan jaringan",
+          );
         }
       } finally {
         setLoading(false);
       }
+
+      return () => controller.abort();
     };
 
-    if (suratNomor) {
-      fetchAyat(suratNomor);
-    }
+    fetchAyat(suratNomor);
   }, [suratNomor]);
 
   return { ayatList, namaSurat, loading, error };

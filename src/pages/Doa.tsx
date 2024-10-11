@@ -32,7 +32,7 @@ const Doa = () => {
   document.title = `Doa - ${webTitle}`;
 
   return (
-    <div className="mt-2 md:mt-5 mx-5 mx:ml-12 min-h-[100vh] ">
+    <div className="mt-2 md:mt-5 mx-5 md:mx-12 min-h-[100vh] ">
       <div className="sticky z-50 top-16 bg-white pb-2">
         <h1 className="text-xl md:text-2xl font-bold">Daftar Doa</h1>
 

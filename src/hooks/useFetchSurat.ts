@@ -28,36 +28,49 @@ export const useFetchSurat = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const fetchSurat = async () => {
       setLoading(true);
-      try {
-        const cachedData: CachedData | undefined =
-          await get<CachedData>(CACHE_KEY);
+      setError(null);
 
+      try {
+        const cachedData = await get<CachedData>(CACHE_KEY);
         const currentTime = Date.now();
 
         if (cachedData && currentTime - cachedData.timestamp < CACHE_DURATION) {
           setSuratList(cachedData.data);
-        } else {
-          const response = await fetch("https://equran.id/api/v2/surat");
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          setSuratList(data.data);
+          return;
+        }
 
+        const response = await fetch("https://equran.id/api/v2/surat", {
+          signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data && data.data) {
+          setSuratList(data.data);
+          // Cache the new data
           await set(CACHE_KEY, {
             data: data.data,
             timestamp: currentTime,
           });
+        } else {
+          throw new Error("Data tidak ditemukan");
         }
-
-        setError(null);
       } catch (err: unknown) {
-        if (err instanceof Error) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          console.log("Fetch request was aborted");
+        } else if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("Error fetching data");
+          setError("Terjadi kesalahan yang tidak diketahui");
         }
       } finally {
         setLoading(false);
@@ -65,6 +78,8 @@ export const useFetchSurat = () => {
     };
 
     fetchSurat();
+
+    return () => controller.abort();
   }, []);
 
   return { suratList, loading, error };

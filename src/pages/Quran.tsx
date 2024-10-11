@@ -57,8 +57,11 @@ const Quran = () => {
                 <span className="border p-5 mb-1 rounded-full w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center bg-gray-300 text-black">
                   {surat.nomor}.
                 </span>
-                <span className="text-base font-semibold">
-                  {surat.namaLatin}
+                <span className="flex gap-2">
+                  <span className="text-base font-semibold">
+                    ({surat.namaLatin})
+                  </span>
+                  <span className="arab-font text-lg">{surat.nama}</span>
                 </span>
                 <span className="text-sm">
                   ({surat.arti}) - {surat.jumlahAyat} Ayat

@@ -86,10 +86,13 @@ const SuratDetail = () => {
     suratList.every((surat) => formatUrl(surat.namaLatin) !== nomor);
 
   useEffect(() => {
-    if (!loadingSurat && isInvalidSurat) {
-      navigate("/404", { replace: true });
-    } else {
-      setIsChecking(false);
+    if (!loadingSurat) {
+      if (isInvalidSurat) {
+        setIsChecking(true);
+        navigate("/404", { replace: true });
+      } else {
+        setIsChecking(false);
+      }
     }
   }, [loadingSurat, isInvalidSurat, navigate]);
 
