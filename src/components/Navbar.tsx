@@ -10,7 +10,6 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  // Close the menu when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -24,7 +23,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Close the menu when a link is clicked
   const handleLinkClick = () => {
     setIsMenuOpen(false);
   };
@@ -34,7 +32,7 @@ const Navbar = () => {
       <nav className="max-w-full mx-auto px-5 md:px-12 py-4 flex justify-between items-center">
         {/*<div>*/}
         <Link
-          to="/"
+          to="/quran"
           className="flex text-2xl md:text-4xl gap-3 items-center text-slate-800 font-bold hover:text-[#3daa25]"
         >
           <FaQuran className="text-[#3daa25]" />
@@ -53,18 +51,6 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <ul className="hidden lg:flex space-x-4 text-slate-500 text-lg">
-          <li>
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-[#3daa25] font-bold"
-                  : "hover:underline hover:text-[#3daa25]"
-              }
-            >
-              Home
-            </NavLink>
-          </li>
           <li>
             <NavLink
               to="/quran"
@@ -99,6 +85,18 @@ const Navbar = () => {
               }
             >
               Asmaul Husna
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/jadwal-salat"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-[#3daa25] font-bold"
+                  : "hover:underline hover:text-[#3daa25]"
+              }
+            >
+              Jadwal Salat
             </NavLink>
           </li>
           {/*<li className="relative group">
@@ -147,7 +145,7 @@ const Navbar = () => {
           >
             <div className="flex items-center justify-between text-center py-6 pl-8 pr-4">
               <Link
-                to="/"
+                to="/quran"
                 className="flex gap-2 items-center text-center justify-center text-2xl text-slate-800 font-bold hover:text-[#3daa25]"
                 onClick={handleLinkClick}
               >
@@ -159,19 +157,6 @@ const Navbar = () => {
               </button>
             </div>
             <ul className="flex flex-col p-8 space-y-4 text-slate-500">
-              <li>
-                <NavLink
-                  to="/"
-                  onClick={handleLinkClick}
-                  className={({ isActive }) =>
-                    isActive
-                      ? "text-[#3daa25] font-bold"
-                      : "hover:underline hover:text-[#3daa25]"
-                  }
-                >
-                  Home
-                </NavLink>
-              </li>
               <li>
                 <NavLink
                   to="/quran"
@@ -209,6 +194,19 @@ const Navbar = () => {
                   }
                 >
                   Asmaul Husna
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/jadwal-salat"
+                  onClick={handleLinkClick}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-[#3daa25] font-bold"
+                      : "hover:underline hover:text-[#3daa25]"
+                  }
+                >
+                  Jadwal Salat
                 </NavLink>
               </li>
             </ul>
