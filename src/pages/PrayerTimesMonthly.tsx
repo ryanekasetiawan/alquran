@@ -12,7 +12,7 @@ const cleanPrayerTime = (time: string): string => {
 const PrayerTimesMonthly = () => {
   const [prayerTimes, setPrayerTimes] = useState<PrayerTime[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<React.ReactNode>(null);
   const [locationAllowed, setLocationAllowed] = useState<boolean>(true);
   const [monthName, setMonthName] = useState<string>("");
   const [year, setYear] = useState<number>(new Date().getFullYear());
