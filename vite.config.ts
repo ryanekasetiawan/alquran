@@ -13,6 +13,9 @@ export default defineConfig({
     sourcemap: false,
     rollupOptions: {
       input: resolve(__dirname, "index.html"),
+      output: {
+        inlineDynamicImports: true,
+      },
     },
   },
   resolve: {
@@ -20,5 +23,5 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
     },
   },
-  base: "./",
+  base: "/",
 });
