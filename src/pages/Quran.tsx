@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/ui/button";
 import SearchInput from "@/components/SearchInput";
@@ -13,6 +13,18 @@ const Quran = () => {
   const { suratList, loading } = useFetchSurat();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = quranRead;
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
 
   const handleNavigate = (surat: SuratType) => {
     const formattedName = formatUrl(surat.namaLatin);
